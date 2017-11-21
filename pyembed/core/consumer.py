@@ -38,7 +38,7 @@ class PyEmbedConsumerError(PyEmbedError):
     """Thrown if there is an error discovering an OEmbed URL."""
 
 
-def get_first_oembed_response(oembed_urls, max_width=None, max_height=None, **options):
+def get_first_oembed_response(oembed_urls, max_width=None, max_height=None, timeout=10, **options):
     """Fetches an OEmbed response from a list of OEmbed URLs.  The URLs will be
     tried in turn until one returns successfully.
 
@@ -50,14 +50,16 @@ def get_first_oembed_response(oembed_urls, max_width=None, max_height=None, **op
     """
     for oembed_url in oembed_urls:
         try:
-            return get_oembed_response(oembed_url, max_width=max_width, max_height=max_height, **options)
+            return get_oembed_response(
+                oembed_url, max_width=max_width, max_height=max_height, timeout=timeout, **options
+            )
         except PyEmbedError:
             logging.warn('Error consuming URL %s' % oembed_url, exc_info=True)
 
     raise PyEmbedConsumerError('No valid OEmbed responses for URLs %s' % oembed_urls)
 
 
-def get_oembed_response(oembed_url, max_width=None, max_height=None, **options):
+def get_oembed_response(oembed_url, max_width=None, max_height=None, timeout=10, **options):
     """Fetches an OEmbed response for a given URL.
 
     Deprecated: use get_first_oembed_response.
@@ -69,7 +71,7 @@ def get_oembed_response(oembed_url, max_width=None, max_height=None, **options):
     :raises PyEmbedError: if there is an error fetching the response.
     """
 
-    response = requests.get(__format_url(oembed_url, max_width, max_height, **options))
+    response = requests.get(__format_url(oembed_url, max_width, max_height, **options), timeout=timeout)
 
     if not response.ok:
         raise PyEmbedConsumerError('Failed to get %s (status code %s)' % (

@@ -43,7 +43,7 @@ class PyEmbed(object):
         self.discoverer = discoverer
         self.renderer = renderer
 
-    def embed(self, url, max_width=None, max_height=None, **options):
+    def embed(self, url, max_width=None, max_height=None, timeout=10, **options):
         """Returns an HTML representation of a resource, given a URL.  This
            can be directly embedded in a web page.
 
@@ -56,7 +56,7 @@ class PyEmbed(object):
         try:
             oembed_urls = self.discoverer.get_oembed_urls(url)
             response = consumer.get_first_oembed_response(
-                oembed_urls, max_width=max_width, max_height=max_height, **options)
+                oembed_urls, max_width=max_width, max_height=max_height, timeout=timeout, **options)
         except requests.exceptions.RequestException as e:
             raise PyEmbedError(e)
 
