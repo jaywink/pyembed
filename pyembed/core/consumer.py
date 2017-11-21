@@ -38,7 +38,7 @@ class PyEmbedConsumerError(PyEmbedError):
     """Thrown if there is an error discovering an OEmbed URL."""
 
 
-def get_first_oembed_response(oembed_urls, max_width=None, max_height=None):
+def get_first_oembed_response(oembed_urls, max_width=None, max_height=None, **options):
     """Fetches an OEmbed response from a list of OEmbed URLs.  The URLs will be
     tried in turn until one returns successfully.
 
@@ -50,14 +50,14 @@ def get_first_oembed_response(oembed_urls, max_width=None, max_height=None):
     """
     for oembed_url in oembed_urls:
         try:
-            return get_oembed_response(oembed_url, max_width=max_width, max_height=max_height)
+            return get_oembed_response(oembed_url, max_width=max_width, max_height=max_height, **options)
         except PyEmbedError:
             logging.warn('Error consuming URL %s' % oembed_url, exc_info=True)
 
     raise PyEmbedConsumerError('No valid OEmbed responses for URLs %s' % oembed_urls)
 
 
-def get_oembed_response(oembed_url, max_width=None, max_height=None):
+def get_oembed_response(oembed_url, max_width=None, max_height=None, **options):
     """Fetches an OEmbed response for a given URL.
 
     Deprecated: use get_first_oembed_response.
@@ -69,7 +69,7 @@ def get_oembed_response(oembed_url, max_width=None, max_height=None):
     :raises PyEmbedError: if there is an error fetching the response.
     """
 
-    response = requests.get(__format_url(oembed_url, max_width, max_height))
+    response = requests.get(__format_url(oembed_url, max_width, max_height, **options))
 
     if not response.ok:
         raise PyEmbedConsumerError('Failed to get %s (status code %s)' % (
@@ -79,7 +79,7 @@ def get_oembed_response(oembed_url, max_width=None, max_height=None):
     return parse.parse_oembed(response.text, content_type)
 
 
-def __format_url(oembed_url, max_width=None, max_height=None):
+def __format_url(oembed_url, max_width=None, max_height=None, **options):
     scheme, netloc, path, query_string, fragment = urlsplit(oembed_url)
     query_params = parse_qsl(query_string)
 
@@ -88,6 +88,9 @@ def __format_url(oembed_url, max_width=None, max_height=None):
 
     if max_height:
         query_params.append(('maxheight', max_height))
+
+    for key, value in options.items():
+        query_params.append((key, value))
 
     new_query_string = urlencode(query_params, doseq=True)
 
