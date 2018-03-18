@@ -54,7 +54,7 @@ def get_first_oembed_response(oembed_urls, max_width=None, max_height=None, time
                 oembed_url, max_width=max_width, max_height=max_height, timeout=timeout, **options
             )
         except PyEmbedError:
-            logging.warn('Error consuming URL %s' % oembed_url, exc_info=True)
+            logging.debug('Error consuming URL %s' % oembed_url, exc_info=True)
 
     raise PyEmbedConsumerError('No valid OEmbed responses for URLs %s' % oembed_urls)
 
