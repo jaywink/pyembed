@@ -47,6 +47,43 @@ def test_should_find_oembed_urls():
         mock_get.assert_called_with('http://example.com/providers.json')
 
 
+def test_should_find_oembed_urls__spotify_like_scheme():
+    response = Mock()
+    response.ok = True
+
+    with open('pyembed/core/test/fixtures/static_discovery/scheme_like_spotify.json') as f:
+        response.json.return_value = json.load(f)
+
+    with patch('requests.get') as mock_get:
+        mock_get.return_value = response
+
+        discoverer = discovery.UrlDiscoverer('http://example.com/providers.json')
+        result = discoverer.get_oembed_urls('http://example.com/simple/123')
+        assert list(result) == [
+            'https://embed.example.com/oembed/?url=http%3A%2F%2Fexample.com%2Fsimple%2F123&format=json',
+            'https://embed.example.com/oembed/?url=http%3A%2F%2Fexample.com%2Fsimple%2F123&format=xml'
+        ]
+
+        mock_get.assert_called_with('http://example.com/providers.json')
+
+
+def test_should_find_oembed_urls__spotify_like_scheme__should_not_incorrectly_match():
+    response = Mock()
+    response.ok = True
+
+    with open('pyembed/core/test/fixtures/static_discovery/scheme_like_spotify.json') as f:
+        response.json.return_value = json.load(f)
+
+    with patch('requests.get') as mock_get:
+        mock_get.return_value = response
+
+        discoverer = discovery.UrlDiscoverer('http://example.com/providers.json')
+        result = discoverer.get_oembed_urls('http://example.org/simple/123')
+        assert not list(result)
+
+        mock_get.assert_called_with('http://example.com/providers.json')
+
+
 def test_should_raise_if_error_reading_url():
     response = Mock()
     response.ok = False

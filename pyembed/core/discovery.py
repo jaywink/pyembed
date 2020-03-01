@@ -183,6 +183,10 @@ class StaticDiscoveryEndpoint(object):
         netloc_regex = re.compile(netloc.replace('*.', '.*\.?'))
         path_regex = re.compile(path.replace('*', '.*'))
 
+        # Never match  against non-http schemes like "spotify:"
+        if scheme not in ("http", "https"):
+            return lambda x: False
+
         return functools.partial(self.__matcher, netloc_regex, path_regex)
 
     @staticmethod

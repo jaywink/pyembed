@@ -1,0 +1,15 @@
+[
+    {
+        "provider_name": "Example",
+        "provider_url": "https:\/\/example.com\/",
+        "endpoints": [
+            {
+                "schemes": [
+                    "https:\/\/*.example.com\/*",
+                    "example:*"
+                ],
+                "url": "https:\/\/embed.example.com\/oembed\/"
+            }
+        ]
+    }
+]
