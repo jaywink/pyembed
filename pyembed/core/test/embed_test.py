@@ -45,7 +45,7 @@ def test_should_embed():
 
         discoverer.get_oembed_urls.assert_called_with('http://example.com/')
         mock_get.assert_called_with(
-            'http://example.com/oembed?format=json', max_width=None, max_height=None)
+            'http://example.com/oembed?format=json', max_width=None, max_height=None, timeout=10)
         renderer.render.assert_called_with('http://example.com/', response)
 
 
@@ -65,7 +65,7 @@ def test_should_embed_xml():
 
         discoverer.get_oembed_urls.assert_called_with('http://example.com/')
         mock_get.assert_called_with(
-            'http://example.com/oembed?format=xml', max_width=None, max_height=None)
+            'http://example.com/oembed?format=xml', max_width=None, max_height=None, timeout=10)
         renderer.render.assert_called_with('http://example.com/', response)
 
 
@@ -86,7 +86,7 @@ def test_should_embed_with_max_width_and_height():
 
         discoverer.get_oembed_urls.assert_called_with('http://example.com/')
         mock_get.assert_called_with(
-            'http://example.com/oembed?format=json', max_width=100, max_height=200)
+            'http://example.com/oembed?format=json', max_width=100, max_height=200, timeout=10)
         renderer.render.assert_called_with('http://example.com/', response)
 
 

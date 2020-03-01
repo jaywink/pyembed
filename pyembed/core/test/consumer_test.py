@@ -34,7 +34,7 @@ def test_should_discover_and_get_oembed_url():
         assert consumer.get_first_oembed_response(
             ['http://example.com/oembed']) == result
 
-        mock_get.assert_called_with('http://example.com/oembed')
+        mock_get.assert_called_with('http://example.com/oembed', timeout=10)
         mock_parse.assert_called_with('hello, world', 'application/json')
 
 
@@ -46,7 +46,7 @@ def test_should_discover_and_get_oembed_url_for_xml():
         assert consumer.get_first_oembed_response(
             ['http://example.com/oembed']) == result
 
-        mock_get.assert_called_with('http://example.com/oembed')
+        mock_get.assert_called_with('http://example.com/oembed', timeout=10)
         mock_parse.assert_called_with('hello, world', 'text/xml')
 
 
@@ -59,7 +59,7 @@ def test_should_discover_and_get_oembed_url_with_charset():
         assert consumer.get_first_oembed_response(
             ['http://example.com/oembed']) == result
 
-        mock_get.assert_called_with('http://example.com/oembed')
+        mock_get.assert_called_with('http://example.com/oembed', timeout=10)
         mock_parse.assert_called_with('hello, world', 'application/json')
 
 
@@ -71,7 +71,7 @@ def test_should_add_max_width():
         assert consumer.get_first_oembed_response(
             ['http://example.com/oembed'], max_width=100) == result
 
-        mock_get.assert_called_with('http://example.com/oembed?maxwidth=100')
+        mock_get.assert_called_with('http://example.com/oembed?maxwidth=100', timeout=10)
         mock_parse.assert_called_with('hello, world', 'application/json')
 
 
@@ -83,7 +83,7 @@ def test_should_add_max_height():
         assert consumer.get_first_oembed_response(
             ['http://example.com/oembed'], max_height=200) == result
 
-        mock_get.assert_called_with('http://example.com/oembed?maxheight=200')
+        mock_get.assert_called_with('http://example.com/oembed?maxheight=200', timeout=10)
         mock_parse.assert_called_with('hello, world', 'application/json')
 
 
@@ -96,7 +96,7 @@ def test_should_add_max_width_and_height():
             ['http://example.com/oembed'], max_width=100, max_height=200) == result
 
         mock_get.assert_called_with(
-            'http://example.com/oembed?maxwidth=100&maxheight=200')
+            'http://example.com/oembed?maxwidth=100&maxheight=200', timeout=10)
         mock_parse.assert_called_with('hello, world', 'application/json')
 
 
@@ -109,7 +109,7 @@ def test_should_add_max_width_when_query_string_present():
             ['http://example.com/oembed?format=json'], max_width=100) == result
 
         mock_get.assert_called_with(
-            'http://example.com/oembed?format=json&maxwidth=100')
+            'http://example.com/oembed?format=json&maxwidth=100', timeout=10)
         mock_parse.assert_called_with('hello, world', 'application/json')
 
 
@@ -122,7 +122,7 @@ def test_should_add_max_height_when_query_string_present():
             ['http://example.com/oembed?format=json'], max_height=200) == result
 
         mock_get.assert_called_with(
-            'http://example.com/oembed?format=json&maxheight=200')
+            'http://example.com/oembed?format=json&maxheight=200', timeout=10)
         mock_parse.assert_called_with('hello, world', 'application/json')
 
 
@@ -135,7 +135,7 @@ def test_should_add_max_width_and_height_when_query_string_present():
             ['http://example.com/oembed?format=json'], max_width=100, max_height=200) == result
 
         mock_get.assert_called_with(
-            'http://example.com/oembed?format=json&maxwidth=100&maxheight=200')
+            'http://example.com/oembed?format=json&maxwidth=100&maxheight=200', timeout=10)
         mock_parse.assert_called_with('hello, world', 'application/json')
 
 
@@ -150,7 +150,9 @@ def test_should_try_next_on_request_error():
         assert consumer.get_first_oembed_response(
             ['http://example.com/oembed1', 'http://example.com/oembed2']) == parsed
 
-        mock_get.assert_has_calls([call('http://example.com/oembed1'), call('http://example.com/oembed2')])
+        mock_get.assert_has_calls([
+            call('http://example.com/oembed1', timeout=10), call('http://example.com/oembed2', timeout=10),
+        ])
         mock_parse.assert_called_with('hello, world', 'application/json')
 
 
@@ -178,7 +180,7 @@ def __set_up_mocks(mock_get, mock_parse, content_type='application/json'):
     return parsed
 
 
-def __one_bad_two_ok(*args):
+def __one_bad_two_ok(*args, **kwargs):
     response = Mock()
     response.ok = args[0] == 'http://example.com/oembed2'
     response.text = 'hello, world'
