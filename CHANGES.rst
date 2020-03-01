@@ -3,6 +3,21 @@
 Changes
 =======
 
+unreleased
+----------
+
+Enhancements:
+
+- Allow passing additional options in the Embed call ([commit](https://github.com/jaywink/pyembed/commit/16f351f3c3230511ce04d86623a2bca904a8979e))
+- Allow passing a timeout to embed calls. Defaults to 10s. ([commit](https://github.com/jaywink/pyembed/commit/e2b8a994cc90b61e3a4a53eb60cad676307d8244))
+- Decrease oembed consuming logging level errors to debug ([commit](https://github.com/jaywink/pyembed/commit/6f8c1cc98d61ee3083e9803255e4b2cc90b5a0dd))
+
+Bug fixes:
+
+- Ensure when using oembed.com providers all links are not matched with Spotify ([commit](https://github.com/jaywink/pyembed/commit/f42021ed5f5da8268382a3522c1478d25b92e3b0))
+
+  Fixes https://github.com/pyembed/pyembed/issues/64
+
 v1.3.3, 2016-04-16
 ------------------
 
