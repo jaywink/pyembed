@@ -51,6 +51,7 @@ class PyEmbedDiscoveryError(PyEmbedError):
 
 class PyEmbedDiscoverer(object):
     """Base class for discovering OEmbed URLs."""
+    headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux aarch64; rv:89.0) Gecko/20100101 Firefox/89.0'}
 
     def get_oembed_url(self, url, oembed_format=None):  # pragma: no cover
         """Retrieves the OEmbed URL for a given resource.
@@ -95,7 +96,7 @@ class AutoDiscoverer(PyEmbedDiscoverer):
 
     def get_oembed_urls(self, url, oembed_format=None):
         media_type = self.__get_type(oembed_format)
-        response = requests.get(url)
+        response = requests.get(url, headers=self.headers)
 
         if response.ok:
             soup = BeautifulSoup(response.text, 'html.parser')
@@ -222,7 +223,7 @@ class UrlDiscoverer(StaticDiscoverer):
 
     def get_oembed_urls(self, url, oembed_format=None):
         if not self.endpoints:
-            response = requests.get(self.url)
+            response = requests.get(self.url, headers=self.headers)
             try:
                 providers = response.json()
             except ValueError:

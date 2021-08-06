@@ -18,7 +18,8 @@
         "endpoints": [
             {
                 "schemes": [
-                    "http:\/\/*.youtube.com\/watch"
+                    "http:\/\/*.youtube.com\/watch",
+                    "http:\/\/youtu.be"
                 ],
                 "url": "http:\/\/www.youtube.com\/oembed",
                 "discovery": true
