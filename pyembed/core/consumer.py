@@ -71,7 +71,8 @@ def get_oembed_response(oembed_url, max_width=None, max_height=None, timeout=10,
     :raises PyEmbedError: if there is an error fetching the response.
     """
 
-    response = requests.get(__format_url(oembed_url, max_width, max_height, **options), timeout=timeout)
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+    response = requests.get(__format_url(oembed_url, max_width, max_height, **options), headers=headers, timeout=timeout)
 
     if not response.ok:
         raise PyEmbedConsumerError('Failed to get %s (status code %s)' % (
