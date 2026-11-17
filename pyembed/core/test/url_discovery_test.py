@@ -44,7 +44,8 @@ def test_should_find_oembed_urls():
             'http://example.com/simple/oembed?url=http%3A%2F%2Fexample.com%2Fsimple%2F123&format=xml'
         ]
 
-        mock_get.assert_called_with('http://example.com/providers.json')
+        mock_get.assert_called_with(
+            'http://example.com/providers.json', headers=discovery.PyEmbedDiscoverer.headers, timeout=10)
 
 
 def test_should_find_oembed_urls__spotify_like_scheme():
@@ -64,7 +65,8 @@ def test_should_find_oembed_urls__spotify_like_scheme():
             'https://embed.example.com/oembed/?url=http%3A%2F%2Fexample.com%2Fsimple%2F123&format=xml'
         ]
 
-        mock_get.assert_called_with('http://example.com/providers.json')
+        mock_get.assert_called_with(
+            'http://example.com/providers.json', headers=discovery.PyEmbedDiscoverer.headers, timeout=10)
 
 
 def test_should_find_oembed_urls__spotify_like_scheme__should_not_incorrectly_match():
@@ -81,7 +83,8 @@ def test_should_find_oembed_urls__spotify_like_scheme__should_not_incorrectly_ma
         result = discoverer.get_oembed_urls('http://example.org/simple/123')
         assert not list(result)
 
-        mock_get.assert_called_with('http://example.com/providers.json')
+        mock_get.assert_called_with(
+            'http://example.com/providers.json', headers=discovery.PyEmbedDiscoverer.headers, timeout=10)
 
 
 def test_should_raise_if_error_reading_url():

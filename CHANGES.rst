@@ -21,6 +21,8 @@ Bug fixes:
   
 - Add user agent to network requests since some sites require it ([#1](https://github.com/jaywink/pyembed/pull/1) contributed by @tripougnif)
 
+- Timeout `UrlDiscoverer` requests to 10 seconds.
+
 v1.3.3, 2016-04-16
 ------------------
 

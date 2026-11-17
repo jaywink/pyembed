@@ -217,25 +217,33 @@ class FileDiscoverer(StaticDiscoverer):
 class UrlDiscoverer(StaticDiscoverer):
     """Discoverer that uses JSON from a URL to discover the OEmbed URL.
     """
-    def __init__(self, url):
+    def __init__(self, url, timeout=10):
         self.url = url
         self.endpoints = None
+        self.timeout = timeout
 
     def get_oembed_urls(self, url, oembed_format=None):
         if not self.endpoints:
-            response = requests.get(self.url, headers=self.headers)
-            try:
-                providers = response.json()
-            except ValueError:
-                providers = None
-
-            if not response.ok or not providers:
-                raise PyEmbedDiscoveryError('Failed to get %s (status code %s)' % (
-                    self.url, response.status_code))
-
-            self.endpoints = StaticDiscoverer._build_endpoints_from_providers(providers)
+            self.endpoints = self.__fetch_endpoints()
 
         return super(UrlDiscoverer, self).get_oembed_urls(url, oembed_format)
+
+    def __fetch_endpoints(self):
+        try:
+            response = requests.get(self.url, headers=self.headers, timeout=self.timeout)
+        except requests.exceptions.RequestException as e:
+            raise PyEmbedDiscoveryError('Failed to get %s (%s)' % (self.url, e))
+
+        try:
+            providers = response.json()
+        except ValueError:
+            providers = None
+
+        if not response.ok or not providers:
+            raise PyEmbedDiscoveryError('Failed to get %s (status code %s)' % (
+                self.url, response.status_code))
+
+        return StaticDiscoverer._build_endpoints_from_providers(providers)
 
 
 class ChainingDiscoverer(PyEmbedDiscoverer):
